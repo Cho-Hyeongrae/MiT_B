@@ -4,10 +4,9 @@
 ## 3. Anomaly Detection
 #
 ### 1. Wear OS
-### 1.1 개인정보 동의
-### 1.2 MQTT
-### 1.3 이상탐지 내역 확인
-### 1.4 최근 심박수 그래프화
+### 1.1 MQTT
+### 1.2 이상탐지 내역 확인
+### 1.3 최근 심박수 그래프화
 #
 ### 2. Thingsboard
 ### 우분투 20.04LTS
@@ -39,13 +38,10 @@
 ###### sudo apt-get update
 ###### sudo apt install timescaledb-2-postgresql-13
 
-### 2.3 Dashboard
-
 #
 ### 3. Anomaly Detection
-### 3.1 데이터 베이스 연동
-### 3.2 필터링
-### 3.3 전처리
-### 3.4 주기성 보정
-### 3.5 이상탐지 
-### 3.6 시각화
+###### pip3 install sklearn
+###### pip3 install pandas
+###### pip3 install numpy
+###### pip3 install matplotlib
+###### pip3 instal seaborn
