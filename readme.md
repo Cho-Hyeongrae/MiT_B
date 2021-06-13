@@ -4,9 +4,29 @@
 ## 3. Anomaly Detection
 #
 ### 1. Wear OS
+#### build.gradle(Module)
+##### implementation 'androidx.wear:wear:1.1.0'
 ### 1.1 MQTT
+#### build.gradle(project)
+##### buildscript {
+#####    ext.kotlin_version = "1.4.32"
+#####    repositories {
+#####        ...
+#####        maven {
+#####            url "https://repo.eclipse.org/content/repositories/paho-snapshots/"
+#####        }
+#####    }
+#### build.gradle(Module)
+##### implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+##### implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
 ### 1.2 이상탐지 내역 확인
+#### build.gradle(Module)
+##### implementation 'postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted'
+##### fileTree(dir: '/home/cho/Downloads/postgresql-42.2.20', include: ['.aar', '.jar'], exclude: [])
 ### 1.3 최근 심박수 그래프화
+##### implementation 'postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted'
+##### fileTree(dir: '/home/cho/Downloads/postgresql-42.2.20', include: ['.aar', '.jar'], exclude: [])
+##### implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 #
 ### 2. Thingsboard
 ### 우분투 20.04LTS
