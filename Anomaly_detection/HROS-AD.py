@@ -46,13 +46,7 @@ outliers_fraction =  args.outliers_fraction
 
 class HROSAD_offline:
 
-   # infer HROS (Heart Rate Over Steps) heart rate ------------------------------------------------------
-
     def HROS(self, heartrate, steps):
-        """
-        This function uses heart rate and steps data to infer restign heart rate.
-        It filters the heart rate with steps that are zero and also 12 minutes ahead.
-        """
 
         conn = psycopg2.connect(host="localhost", port = 5432, 
         database="postgres", user="postgres", password="7452")
@@ -76,15 +70,13 @@ class HROSAD_offline:
             for row in query_results_stpes:
                 writer.writerow(row)
         # heart rate data
-        df_hr = pd.read_csv("/home/cho/Desktop/HROS-AD/COVID-19-Wearables/AHYIJDV_hr.csv")
-        # df_hr = pd.read_csv("/home/cho/Desktop/workspace/team2_hr.csv")
+        df_hr = pd.read_csv("path_csv")
         df_hr = df_hr.set_index('datetime')
         df_hr.index.name = None
         df_hr.index = pd.to_datetime(df_hr.index)
 
         # steps data
-        df_steps = pd.read_csv("/home/cho/Desktop/HROS-AD/COVID-19-Wearables/AHYIJDV_steps.csv")
-        # df_steps = pd.read_csv("/home/cho/Desktop/workspace/team2_steps.csv")
+        df_steps = pd.read_csv("path_csv")
         df_steps = df_steps.set_index('datetime')
         df_steps.index.name = None
         df_steps.index = pd.to_datetime(df_steps.index)
@@ -95,27 +87,19 @@ class HROSAD_offline:
         df1['heartrate'] = (df1['heartrate']/df1['steps']) 
         return df1
 
-     # pre-processing ------------------------------------------------------
 
     def pre_processing(self, resting_heart_rate):
-        """
-        This function takes resting heart rate data and applies moving averages to smooth the data and 
-        downsamples to one hour by taking the avegare values
-        """
-        # smooth data
+
         df_nonas = df1.dropna()
         df1_rom = df_nonas.rolling(400).mean()
-        # resample
+      
         df2 = df1_rom.resample('10min').mean()
         df2 = df2.dropna()
         return df2
 
-    # seasonality correction ------------------------------------------------------
 
     def seasonality_correction(self, heartrate, steps):
-        """
-        This function takes output pre-processing and applies seasonality correction
-        """
+
         sdHR_decomposition = seasonal_decompose(sdHR, model='additive', freq=1)
         sdSteps_decomposition = seasonal_decompose(sdSteps, model='additive', freq=1)
         sdHR_decomp = pd.DataFrame(sdHR_decomposition.resid + sdHR_decomposition.trend)
@@ -126,12 +110,9 @@ class HROSAD_offline:
         data = pd.concat(frames, axis=1)
         return data
 
-    # standardization ------------------------------------------------------
 
     def standardization(self, seasonality_corrected_data):
-        """
-        Standardize the data with zero meann and unit variance (Z-score).
-        """
+
         data_scaled = StandardScaler().fit_transform(data_seasnCorec.values)
         data_scaled_features = pd.DataFrame(data_scaled, index=data_seasnCorec.index, columns=data_seasnCorec.columns)
         data_df = pd.DataFrame(data_scaled_features)
@@ -139,23 +120,14 @@ class HROSAD_offline:
         data.to_csv('data.csv')
         return data
 
-    # train model and predict anomalies -----------------------------------
 
     def anomaly_detection(self, standardized_data):
-        """
-        This function takes the standardized data and detects outliers using Gaussian density estimation.
-        """
+
         model =  EllipticEnvelope(contamination=outliers_fraction, 
                              #behaviour="new",
                              random_state=RANDOM_SEED, support_fraction=0.7)
 
-        # model = IsolationForest(max_samples = 100, 
-        #                         contamination = 0.1, 
-        #                         n_estimators = 100,random_state=10)
 
-
-        
-        # model = OneClassSVM(kernel= 'rbf',gamma=100,nu=0.10)
 
         model.fit(std_data)
 
@@ -166,12 +138,9 @@ class HROSAD_offline:
         data.to_csv('score.csv')
         return data
 
-    # Visualization ------------------------------------------------------
 
     def visualize(self, results, symptom_date, diagnosis_date):
-        """
-        visualize results and also save them to a .csv file 
-        """
+
         try:
 
             with plt.style.context('fivethirtyeight'):
